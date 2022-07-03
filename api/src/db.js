@@ -2,14 +2,31 @@ require('dotenv').config();
 const { Sequelize } = require('sequelize');
 const fs = require('fs');
 const path = require('path');
-const {
-  DB_USER, DB_PASSWORD, DB_HOST,
+const { DATABASE_URL
 } = process.env;
 
-const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pokemon`, {
-  logging: false, // set to console.log to see the raw SQL queries
-  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-});
+let sequelize =
+  process.env.NODE_ENV === "production"
+    ?
+new Sequelize({
+  database: "df0pnf28658an4",
+  username: "saamdpycqujzxq",
+  password: "0cb5b7d9feea5a8380d339fc1ab39f8e08193df54e588ab7229729b97015d798",
+  host: "ec2-52-73-184-24.compute-1.amazonaws.com",
+  port: 5432,
+  dialect: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true, // This will help you. But you will see nwe error
+      rejectUnauthorized: false // This line will fix new error
+    }
+  },
+})
+
+: new Sequelize(
+DATABASE_URL,
+  { logging: false, native: false }
+)
 const basename = path.basename(__filename);
 
 const modelDefiners = [];
